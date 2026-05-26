@@ -1,4 +1,4 @@
-# Smart Portable Analyzer System (SPAS)
+# SPAS — Edge-Based Environmental Telemetry & SPARING Gateway
 
 > **Real-time IIoT environmental monitoring platform** — acquires multi-parameter sensor data via Modbus RTU/TCP & GPIO, stores it in MySQL, serves a live web dashboard, and transmits hourly readings to the Indonesian **KLHK SPARING** regulatory API for environmental compliance.
 

@@ -33,7 +33,7 @@
 
 ## About the Project
 
-**Smart Portable Analyzer System (SPAS)** is a field-deployable IIoT monitoring system designed for industrial and environmental applications requiring continuous, multi-parameter data acquisition. The system is architected around a Raspberry Pi edge device that communicates with a heterogeneous array of scientific instruments via RS485 (Modbus RTU), Ethernet (Modbus TCP), and GPIO interfaces.
+**SPAS — Edge-Based Environmental Telemetry & SPARING Gateway** is a field-deployable IIoT monitoring system designed for industrial and environmental applications requiring continuous, multi-parameter data acquisition. The system is architected around a Raspberry Pi edge device that communicates with a heterogeneous array of scientific instruments via RS485 (Modbus RTU), Ethernet (Modbus TCP), and GPIO interfaces.
 
 ### Problem Statement
 
@@ -585,4 +585,4 @@ logger/
 
 ---
 
-*Generated for Smart Portable Analyzer System (SPAS) — IIoT Environmental Monitoring Platform*
+*Generated for SPAS — Edge-Based Environmental Telemetry & SPARING Gateway*

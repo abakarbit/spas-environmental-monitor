@@ -12,7 +12,7 @@ import sqlite3
 import pytz
 
 # Load environment variables
-env_path = "/opt/logger/config/env"
+env_path = "/opt/logger/config/.env"
 if not load_dotenv(dotenv_path=env_path):
     print(f"Error: env file not found at {env_path}")
     exit(1)

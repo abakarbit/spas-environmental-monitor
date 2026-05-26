@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 
 
 # Load environment variables
-env_path = "/opt/logger/config/env"  # env file path
+env_path = "/opt/logger/config/.env"  # env file path
 if not load_dotenv(dotenv_path=env_path):
     print(f"Error: env file not found at {env_path}")
     exit(1)

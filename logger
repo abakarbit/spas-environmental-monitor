@@ -1,8 +1,8 @@
 #!/bin/bash
 # ============================================
-#  logger (Smart Portable Analyzer System) - Control Script
+#  logger (SPAS — Edge-Based Environmental Telemetry & SPARING Gateway) - Control Script
 # ============================================
-# Nama Aplikasi : Smart Portable Analyzer System (logger)
+# Nama Aplikasi : SPAS — Edge-Based Environmental Telemetry & SPARING Gateway (logger)
 # Deskripsi     : Kontrol script untuk sistem pemantauan cuaca dan kualitas udara
 # Dibuat oleh   : Abu Bakar <abubakar.it.dev@gmail.com>
 # Versi         : 1.0
@@ -11,7 +11,7 @@
 
 # Strict mode untuk penanganan error yang lebih baik
 set -euo pipefail
-trap 'echo "❌ Error pada baris $LINENO. Perintah gagal: $BASH_COMMAND"' ERR
+trap 'echo "Error pada baris $LINENO. Perintah gagal: $BASH_COMMAND"' ERR
 
 # Konfigurasi
 readonly SERVICES=("logger-sensor.service" "logger-web.service" "logger-web-log.service" "logger-backup.service" "logger-gpio.service" "logger-klhk-send.service" "logger-klhk-retry.service" "logger-has-send.service")
@@ -22,28 +22,28 @@ readonly DB_DIR="$APP_BASE/database"
 
 # Fungsi untuk menampilkan pesan error dan keluar
 error_exit() {
-    echo "❌ $1" >&2
+    echo "Error: $1" >&2
     exit 1
 }
 
 # Fungsi untuk memeriksa privilege
 check_privileges() {
     if [[ $EUID -ne 0 ]]; then
-        echo "⚠️  Perintah ini membutuhkan privilege root. Silakan gunakan sudo." >&2
+        echo "Perintah ini membutuhkan privilege root. Silakan gunakan sudo." >&2
         exit 1
     fi
 }
 
 # Fungsi untuk memeriksa apakah service ada
 check_exists() {
-    echo "🔍 Memeriksa keberadaan service..."
+    echo "Memeriksa keberadaan service..."
     local found=false
     for service in "${SERVICES[@]}"; do
         if [ -f "/etc/systemd/system/$service" ]; then
-            echo "✔ $service ditemukan"
+            echo "$service ditemukan"
             found=true
         else
-            echo "✖ $service TIDAK ditemukan"
+            echo "$service TIDAK ditemukan"
         fi
     done
     
@@ -55,29 +55,29 @@ check_exists() {
 # Fungsi untuk memulai semua service
 start_services() {
     check_privileges
-    echo "🚀 Memulai semua service..."
+    echo "Memulai semua service..."
     for service in "${SERVICES[@]}"; do
         if systemctl is-active --quiet "$service"; then
-            echo "ℹ️  $service sudah berjalan"
+            echo "ℹ$service sudah berjalan"
         else
-            systemctl start "$service" && echo "▶️ $service dijalankan" || echo "❌ Gagal menjalankan $service"
+            systemctl start "$service" && echo "$service dijalankan" || echo "Gagal menjalankan $service"
         fi
     done
-    echo "✅ Semua service telah diproses."
+    echo "Semua service telah diproses."
 }
 
 # Fungsi untuk menghentikan semua service
 stop_services() {
     check_privileges
-    echo "🛑 Menghentikan semua service..."
+    echo "Menghentikan semua service..."
     for service in "${SERVICES[@]}"; do
         if systemctl is-active --quiet "$service"; then
-            systemctl stop "$service" && echo "⏹️ $service dihentikan" || echo "❌ Gagal menghentikan $service"
+            systemctl stop "$service" && echo "$service dihentikan" || echo "Gagal menghentikan $service"
         else
-            echo "ℹ️  $service sudah tidak berjalan"
+            echo "$service sudah tidak berjalan"
         fi
     done
-    echo "✅ Semua service telah diproses."
+    echo "Semua service telah diproses."
 }
 
 # Fungsi untuk memulai service spesifik
@@ -91,9 +91,9 @@ start_service_by_name() {
     fi
     
     if systemctl is-active --quiet "$service_name"; then
-        echo "ℹ️  $service_name sudah berjalan"
+        echo "$service_name sudah berjalan"
     else
-        systemctl start "$service_name" && echo "▶️ $service_name dijalankan" || error_exit "Gagal menjalankan $service_name"
+        systemctl start "$service_name" && echo "$service_name dijalankan" || error_exit "Gagal menjalankan $service_name"
     fi
 }
 
@@ -108,15 +108,15 @@ stop_service_by_name() {
     fi
     
     if systemctl is-active --quiet "$service_name"; then
-        systemctl stop "$service_name" && echo "⏹️ $service_name dihentikan" || error_exit "Gagal menghentikan $service_name"
+        systemctl stop "$service_name" && echo "$service_name dihentikan" || error_exit "Gagal menghentikan $service_name"
     else
-        echo "ℹ️  $service_name sudah tidak berjalan"
+        echo "$service_name sudah tidak berjalan"
     fi
 }
 
 # Fungsi untuk mereset semua service
 reset_services() {
-    echo "🔄 Mereset semua service..."
+    echo "Mereset semua service..."
     stop_services
     sleep 2
     start_services
@@ -124,11 +124,11 @@ reset_services() {
 
 # Fungsi untuk menampilkan status semua service
 status_services() {
-    echo "📊 Status semua service:"
+    echo "Status semua service:"
     echo "========================================"
     
     for service in "${SERVICES[@]}"; do
-        echo -n "📋 Status $service: "
+        echo -n "Status $service: "
         if systemctl is-active --quiet "$service"; then
             echo -e "\033[32mAKTIF\033[0m"
         else
@@ -144,79 +144,79 @@ status_services() {
         echo "----------------------------------------"
     done
     
-    echo "💡 Untuk detail lebih lanjut, jalankan: systemctl status <service>"
+    echo "Untuk detail lebih lanjut, jalankan: systemctl status <service>"
 }
 
 # Fungsi untuk uninstall
 uninstall_services() {
     check_privileges
-    echo "🚨 Memulai proses uninstall logger (Smart Portable Analyzer System)..."
-    echo "⚠️  Operasi ini akan menghapus semua service dan file aplikasi!"
+    echo "Memulai proses uninstall logger (Smart Portable Analyzer System)..."
+    echo "Operasi ini akan menghapus semua service dan file aplikasi!"
     
     # Konfirmasi sebelum uninstall
-    read -p "❓ Apakah Anda yakin ingin melanjutkan uninstall? [y/N]: " -n 1 -r
+    read -p "Apakah Anda yakin ingin melanjutkan uninstall? [y/N]: " -n 1 -r
     echo
     if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        echo "❌ Uninstall dibatalkan."
+        echo "Uninstall dibatalkan."
         exit 1
     fi
     
     # Tanya tentang database
-    read -p "❓ Apakah Anda ingin menghapus database? [y/N]: " -n 1 -r
+    read -p "Apakah Anda ingin menghapus database? [y/N]: " -n 1 -r
     echo
     DELETE_DB=$REPLY
     
-    echo "🛑 Menghentikan dan menonaktifkan service..."
+    echo "Menghentikan dan menonaktifkan service..."
     for service in "${SERVICES[@]}"; do
         if systemctl is-active --quiet "$service"; then
-            systemctl stop "$service" && echo "✅ $service dihentikan" || echo "❌ Gagal menghentikan $service"
+            systemctl stop "$service" && echo "$service dihentikan" || echo "Gagal menghentikan $service"
         fi
         
         if systemctl is-enabled --quiet "$service"; then
-            systemctl disable "$service" && echo "✅ $service dinonaktifkan" || echo "❌ Gagal menonaktifkan $service"
+            systemctl disable "$service" && echo "$service dinonaktifkan" || echo "Gagal menonaktifkan $service"
         fi
         
         if [ -f "/etc/systemd/system/$service" ]; then
-            rm -f "/etc/systemd/system/$service" && echo "🗑️ $service dihapus" || echo "❌ Gagal menghapus $service"
+            rm -f "/etc/systemd/system/$service" && echo "$service dihapus" || echo "Gagal menghapus $service"
         fi
     done
     
-    echo "🔄 Reload systemd daemon..."
+    echo "Reload systemd daemon..."
     systemctl daemon-reload
     systemctl reset-failed
     
     if [[ $DELETE_DB =~ ^[Yy]$ ]]; then
-        echo "🗑️ Menghapus seluruh direktori $APP_BASE termasuk database..."
-        rm -rf "$APP_BASE" && echo "✅ Direktori aplikasi dihapus" || echo "❌ Gagal menghapus direktori aplikasi"
+        echo "Menghapus seluruh direktori $APP_BASE termasuk database..."
+        rm -rf "$APP_BASE" && echo "Direktori aplikasi dihapus" || echo "Gagal menghapus direktori aplikasi"
     else
-        echo "⚠️ Menyisakan database. Menghapus semua kecuali folder $DB_DIR..."
+        echo "Menyisakan database. Menghapus semua kecuali folder $DB_DIR..."
         if [ -d "$APP_BASE" ]; then
-            find "$APP_BASE" -mindepth 1 -not -path "$DB_DIR" -not -path "$DB_DIR/*" -exec rm -rf {} + && echo "✅ Aplikasi dihapus (database disimpan)" || echo "❌ Gagal menghapus aplikasi"
+            find "$APP_BASE" -mindepth 1 -not -path "$DB_DIR" -not -path "$DB_DIR/*" -exec rm -rf {} + && echo "Aplikasi dihapus (database disimpan)" || echo "Gagal menghapus aplikasi"
         fi
-        echo "✅ Folder database tetap disimpan di $DB_DIR"
+        echo "Folder database tetap disimpan di $DB_DIR"
     fi
     
     if [ -f "$BIN_PATH" ]; then
-        rm -f "$BIN_PATH" && echo "🗑️ CLI logger dihapus dari $BIN_PATH" || echo "❌ Gagal menghapus CLI logger"
+        rm -f "$BIN_PATH" && echo "CLI logger dihapus dari $BIN_PATH" || echo "Gagal menghapus CLI logger"
     else
-        echo "ℹ️  CLI logger tidak ditemukan di $BIN_PATH, dilewati."
+        echo "CLI logger tidak ditemukan di $BIN_PATH, dilewati."
     fi
     
-    echo "✅ Uninstall selesai. Sistem telah dibersihkan."
+    echo "Uninstall selesai. Sistem telah dibersihkan."
 }
 
 # Fungsi untuk menampilkan menu bantuan
 help_menu() {
     echo "========================================================================================================"
-    echo " Smart Portable Analyzer System (logger) - Control Script"
+    echo " SPAS — Edge-Based Environmental Telemetry & SPARING Gateway - Control Script"
     echo "========================================================================================================"
-    echo "📌 Dibuat oleh        : Abu Bakar <abubakar.it.dev@gmail.com>"
-    echo "📌 Deskripsi          : Sistem pemantauan cuaca dan kualitas udara otomatis berbasis Python & API"
-    echo "📌 Lokasi Instalasi   : /opt/logger"
-    echo "📌 Service            : logger-sensor, logger-web, logger-web-log, logger-backup, logger-klhk-send, logger-klhk-retry"
-    echo "📌 Web Port           : 0.0.0.0:5010"
-    echo "📌 Web Log Port       : 0.0.0.0:3000"
-    echo "📌 PhpMyAdmin         : 0.0.0.0:8080"
+    echo "Dibuat oleh        : Abu Bakar <abubakar.it.dev@gmail.com>"
+    echo "Deskripsi          : Kontrol script untuk sistem pemantauan cuaca dan kualitas udara"
+    echo "Lokasi Instalasi   : /opt/logger"
+    echo "Service            : logger-sensor, logger-web, logger-web-log, logger-backup, logger-klhk-send, logger-klhk-retry"
+    echo "Web Port           : 0.0.0.0:5010"
+    echo "Web Log Port       : 0.0.0.0:3000"
+    echo "PhpMyAdmin         : 0.0.0.0:8080"
     echo "========================================================================================================="
     echo ""
     echo "Penggunaan: logger [perintah] [opsi]"
@@ -275,8 +275,8 @@ case "${1:-}" in
         help_menu
         ;;
     *)
-        echo "❌ Perintah tidak dikenal: $1"
-        echo "💡 Gunakan 'logger help' untuk melihat perintah yang tersedia."
+        echo "Perintah tidak dikenal: $1"
+        echo "Gunakan 'logger help' untuk melihat perintah yang tersedia."
         exit 1
         ;;
 esac

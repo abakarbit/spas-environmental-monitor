@@ -26,7 +26,7 @@ logging.basicConfig(
 )
 
 # === Load env ===
-env_path = "/opt/logger/config/env"
+env_path = "/opt/logger/config/.env"
 if not load_dotenv(dotenv_path=env_path):
     print(f"❌ env file not found at {env_path}")
     exit(1)
